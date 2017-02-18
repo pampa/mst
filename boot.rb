@@ -5,4 +5,5 @@ else
     raise "I'm sorry Dave, I'm afraid I can't do that. Don't know how to run on #{RUBY_PLATFORM}"
 end
 
-#require_relalive "gits/patchbay"
+require_relative "guts/midistring"
+require_relative "guts/patchbay"
