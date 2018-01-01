@@ -25,37 +25,32 @@ typedef struct {
 } c_input_t;
 
 VALUE m_Alsa;
-VALUE m_alsa_ports(void);
+VALUE m_Alsa_hw_ports(void);
+VALUE m_Alsa_input(VALUE self, VALUE ports);
 VALUE list_card_devices(int);
 VALUE list_device(snd_ctl_t *ctl, int card, int device);
 
-VALUE c_Input;
-VALUE c_input_init(VALUE self);
-VALUE c_input_open(VALUE self, VALUE port);
-VALUE c_input_listen(VALUE self);
-
+/*
 VALUE c_Output;
 VALUE c_output_open(VALUE class, VALUE port);
 VALUE c_output_send(VALUE self, VALUE data);
+*/
 
-
-void Init_alsa() 
+void Init_alsa_ext() 
 { 
-    m_Alsa  = rb_define_module("ALSA");
-    rb_define_singleton_method(m_Alsa,"ports",m_alsa_ports,0);
-    
-    c_Input = rb_define_class_under(m_Alsa, "Input", rb_cObject);
-    rb_define_method(c_Input,"initialize",c_input_init,0);
-    rb_define_method(c_Input,"open",c_input_open,1);
-    rb_define_method(c_Input,"listen",c_input_listen,0);
+    m_Alsa  = rb_define_module("Alsa");
+    rb_define_singleton_method(m_Alsa,"hw_ports",m_Alsa_hw_ports,0);
+    rb_define_singleton_method(m_Alsa,"input",   m_Alsa_input,1);
 
+    /*
     c_Output = rb_define_class_under(m_Alsa, "Output", rb_cObject);
     rb_define_singleton_method(c_Output,"open",c_output_open,1);
     rb_define_method(c_Output,"send",c_output_send,1);
     rb_define_method(c_Output,"<<",c_output_send,1);
+    */
 }
 
-VALUE m_alsa_ports(void) 
+VALUE m_Alsa_hw_ports(void) 
 {
     int card, err;
     VALUE _ary;
@@ -168,43 +163,24 @@ VALUE list_device(snd_ctl_t *ctl, int card, int device)
     return ary;
 }
 
-VALUE c_input_init(VALUE self) 
-{
-    rb_iv_set(self,"@ports",rb_ary_new());
-    return self;
-}
-
-VALUE c_input_open(VALUE self, VALUE port) 
-{
-    VALUE ary;
-
-    ary = rb_iv_get(self,"@ports");
-
-    if (rb_ary_includes(ary,port) == Qfalse) {
-        rb_ary_push(ary,port);
-    }
-    return Qnil;
-}
-
-VALUE c_input_listen(VALUE self) 
+VALUE m_Alsa_input(VALUE self, VALUE ports) 
 {
     c_input_t *inp;
     int count, i, err;
     int npfds = 0;
-    VALUE ports, _port;
+    VALUE _port;
     struct pollfd *pfds;
    
     if(rb_block_given_p() == 0) {
-        THROW("ALSA::Input.listen requires a block");
+        THROW("ALSA::listen_on_ports requires a block");
     }
 
-    ports = rb_iv_get(self, "@ports");
     count = RARRAY_LEN(ports);
 
     inp = alloca(count * sizeof(c_input_t));
 
     for (i = 0; i < count; i++) {
-        _port = rb_ary_entry(rb_iv_get(self,"@ports"),i);
+        _port = rb_ary_entry(ports,i);
         inp[i].port = StringValueCStr(_port);
         if ((err = snd_rawmidi_open(&inp[i].in, NULL, inp[i].port, SND_RAWMIDI_NONBLOCK)) < 0) {
             THROW("Problem opening MIDI input", snd_strerror(err));
@@ -283,6 +259,7 @@ VALUE c_input_listen(VALUE self)
     return Qnil;
 }
 
+/*
 VALUE c_output_open(VALUE class, VALUE port)
 {
     int status;
@@ -312,4 +289,4 @@ VALUE c_output_send(VALUE self, VALUE data) {
     } 
 
     return Qnil;
-}
+}*/

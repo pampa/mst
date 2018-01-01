@@ -1,59 +1,32 @@
-#require_relative 'alsa'
+require "./midi" 
 
-#class Synth
-#	SYNTHS = {} 
-#
-#	attr_accessor :name, :shortname
-#
-#	def initialize(tag)
-#		@tag = tag
-#		SYNTHS[tag] = self
-#	end
-#
-#	def name(name, sub_name)
-#		@name      = name
-#		@sub_name  = sub_name
-#	end
-#
-#	def is_it?(a)
-#		@name == a[:name] && @sub_name == a[:sub_name]
-#	end
-#
-#	def to_s
-#		"#{@name} (#{@sub_name})"
-#	end
-#
-#	def self.input(tag)
-#		s = SYNTHS[tag]
-#		raise "Uknown synth :#{tag}" if s.nil?
-#		if inp = ALSA::Midi.ports.select { |c| s.is_it?(c) }.first
-#			return ALSA::Midi::Input.new(inp[:port])
-#		else
-#			raise "Did you plug in your #{s}?"
-#		end
-#	end
-#	
-#	def self.output(tag)
-#		s = SYNTHS[tag]
-#		raise "Uknown syth :#{tag}" if s.nil?
-#		if inp = ALSA::Midi.ports.select { |c| s.is_it?(c) }.first
-#			return ALSA::Midi::Output.open inp[:port]
-#		else
-#			raise "Did you plug in your #{s}?"
-#		end
-#	end
-#end	
+class Synth
+  def initialize(name, sub_name)
+    @name     = name
+    @sub_name = sub_name
+  end
 
-#def synth(tag,&block)
-#	Synth.new(tag).instance_exec &block
-#end
+  def hw_port
+    Alsa.hw_ports.select { |i| i[:name] == @name && i[:sub_name] == @sub_name }.first[:port]
+  end
 
-#def synth_alias(a)
-#	a.each do |k,v|
-#		raise "Unknown synth :#{v}" if Synth::SYNTHS[v].nil?
-#		Synth::SYNTHS[k] = Synth::SYNTHS[v]
-#	end
-#end
+  def on(type = :all, &block)
+    if block_given?
+      @yield ||= {}
+      @yield[type] = block
+    else
+      raise "Expecing Block"
+    end
+  end
+  
+  def emit(m)
+    m.extend Midi
+    @yield[:all]  .call(m) if @yield.has_key?(:all)
+    @yield[:clock].call(m) if @yield.has_key?(:clock) && m.clock?
+    @yield[:note] .call(m) if @yield.has_key?(:note)  && m.note?
+  end
+end
+
 
 #def pgm(chan, val)
 #	raise "channel must be 1..16" unless (1..16).include?(chan)

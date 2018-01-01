@@ -1,16 +1,12 @@
-require_relative 'lib/synth'
+require "./alsa"
+require "./synth"
 
-synth :circuit do
-	name "Circuit", "Circuit MIDI 1"
+circ = Synth.new("Circuit", "Circuit MIDI 1")
+#korg = Synth.new("MS-20 mini", "MS-20 mini MIDI 1")
+#euro = Synth.new("UM-ONE",     "UM-ONE MIDI 1")
+
+circ.on(:note) do |m|
+  m.pp
 end
 
-synth :ms20mini do
-	name "MS-20 mini", "MS-20 mini MIDI 1"
-end
-
-synth :umone do
-	name "UM-ONE", "UM-ONE MIDI 1"
-end
-
-synth_alias :korg => :ms20mini
-synth_alias :nova => :umone
+Alsa.listen(circ)
