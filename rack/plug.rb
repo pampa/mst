@@ -1,4 +1,4 @@
-require_relative "./alsa"
+require_relative "./alsa_ext"
 
 class Plug 
   def initialize(name, sub_name)
@@ -10,29 +10,79 @@ class Plug
     Alsa.hw_ports.select { |i| i[:name] == @name && i[:sub_name] == @sub_name }.first[:port]
   end
 
-  def on(type = :all, &block)
+  def input(**p, &block)
     if block_given?
       @yield ||= {}
-      @yield[type] = block
+      @yield[p] = block
     else
       raise "Expecting Block"
     end
   end
-  
+
+  def self.start(*s)
+    ports = {}
+    s.each { |_s| ports[_s.hw_port] = _s }
+    Alsa.input(ports.keys) do |port, msg|
+      ports[port].emit(msg)
+    end
+  end
+
   def emit(bytes)
-    m = Message.new(bytes)
-    @yield[:all]  .call(m) if @yield.has_key?(:all)
-    @yield[:clock].call(m) if @yield.has_key?(:clock) && m.clock?
-    @yield[:note] .call(m) if @yield.has_key?(:note)  && m.note?
+    m = Midi.new(bytes)
+    @yield.each do |k,v|
+      if k.keys.length == 0
+        v.call(m)
+      else
+        emit = [true]
+        if k.has_key?(:type)
+          types = xpand(k[:type])
+          if types.include?(m.type)
+            emit.push(true)
+          else
+            emit.push(false)
+          end
+        end
+        if k.has_key?(:exclude)
+          types = xpand(k[:exclude])
+          if types.include?(m.type)
+            emit.push(false)
+          else
+            emit.push(true)
+          end
+        end
+        v.call(m) if emit.all?
+      end
+    end
+  end
+
+  private
+  def xpand(a)
+    if a.class != Array
+      types = [a]
+    else
+      types = a
+    end
+    types.map do |i|
+      if i == :note
+        [:note_on, :note_off]
+      elsif i == :clock
+        [:start, :stop, :pulse]
+      else
+        i
+      end
+    end.flatten
   end
 end
 
-class Message
+class Midi
+
+  attr_accessor :type
+
   def initialize(bytes)
     byte1 = bytes[0].ord
-    @type = :start    if byte1 == 0xfa
-    @type = :stop     if byte1 == 0xfc
-    @type = :pulse    if byte1 == 0xf8
+    @type = :start    if byte1 == 0xFA
+    @type = :stop     if byte1 == 0xFC
+    @type = :pulse    if byte1 == 0xF8
     @type = :note_on  if byte1 & 0xF0 == 0x90 
     @type = :note_off if byte1 & 0xF0 == 0x80 
   end
