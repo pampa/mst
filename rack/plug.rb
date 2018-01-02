@@ -1,6 +1,6 @@
-require "./midi" 
+require_relative "./alsa"
 
-class Synth
+class Plug 
   def initialize(name, sub_name)
     @name     = name
     @sub_name = sub_name
@@ -15,31 +15,48 @@ class Synth
       @yield ||= {}
       @yield[type] = block
     else
-      raise "Expecing Block"
+      raise "Expecting Block"
     end
   end
   
-  def emit(m)
-    m.extend Midi
+  def emit(bytes)
+    m = Message.new(bytes)
     @yield[:all]  .call(m) if @yield.has_key?(:all)
     @yield[:clock].call(m) if @yield.has_key?(:clock) && m.clock?
     @yield[:note] .call(m) if @yield.has_key?(:note)  && m.note?
   end
 end
 
+class Message
+  def initialize(bytes)
+    byte1 = bytes[0].ord
+    @type = :start    if byte1 == 0xfa
+    @type = :stop     if byte1 == 0xfc
+    @type = :pulse    if byte1 == 0xf8
+    @type = :note_on  if byte1 & 0xF0 == 0x90 
+    @type = :note_off if byte1 & 0xF0 == 0x80 
+  end
 
-#def pgm(chan, val)
-#	raise "channel must be 1..16" unless (1..16).include?(chan)
-#	raise "value must be 0..127" unless (0..127).include?(val)
-#	return ((0xC0 | (chan - 1)).chr + val.chr)
-#end
+  def start?
+    @type == :start
+  end
 
-#def cc(chan, val1, val2)
-#	raise "channel must be 1..16" unless (1..16).include?(chan)
-#	raise "value1 must be 0..119" unless (0..119).include?(val1)
-#	raise "value2 must be 0..127" unless (0..127).include?(val2)
-#	return ((0xB0 | (chan - 1)).chr + val1.chr + val2.chr)
-#end
+  def stop?
+    @type == :stop
+  end
+
+  def pulse?
+    @type == :pulse
+  end
+
+  def clock?
+    [:pulse,:start,:stop].include?(@type)
+  end
+
+  def note?
+    [:note_on,:note_off].include?(@type)
+  end
+end
 
 #class Sequencer 
 #	def initialize
@@ -112,5 +129,3 @@ end
 #		end
 #	end
 #end
-#
-

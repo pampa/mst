@@ -1,4 +1,4 @@
-require "./alsa_ext"
+require_relative "./alsa_ext"
 
 module Alsa
   def self.listen(*s)
