@@ -42,12 +42,24 @@ class Plug
             emit.push(false)
           end
         end
-        if k.has_key?(:exclude)
-          types = xpand(k[:exclude])
+        if k.has_key?(:skip)
+          types = xpand(k[:skip])
           if types.include?(m.type)
             emit.push(false)
           else
             emit.push(true)
+          end
+        end
+        if k.has_key?(:chan)
+          if k[:chan].class != Array
+            chan = [k[:chan]]
+          else
+            chan = k[:chan]
+          end
+          if chan.include?(m.chan)
+            emit.push(true)
+          else
+            emit.push(false)
           end
         end
         v.call(m) if emit.all?
@@ -76,7 +88,7 @@ end
 
 class Midi
 
-  attr_accessor :type
+  attr_accessor :type, :chan
 
   def initialize(bytes)
     byte1 = bytes[0].ord
@@ -84,7 +96,22 @@ class Midi
     @type = :stop     if byte1 == 0xFC
     @type = :pulse    if byte1 == 0xF8
     @type = :note_on  if byte1 & 0xF0 == 0x90 
-    @type = :note_off if byte1 & 0xF0 == 0x80 
+    @type = :note_off if byte1 & 0xF0 == 0x80
+    @type = :cc       if byte1 & 0xF0 == 0xB0
+    if chan?
+      @chan = (byte1 & 0x0F) + 1
+    end
+    if note?
+      @note   = bytes[1].ord
+      @velo   = bytes[2].ord
+    end
+    if cc?
+      @number = bytes[1].ord
+      @value  = bytes[2].ord
+    end
+    if @type.nil?
+      @bytes = bytes.bytes.collect { |b| sprintf("0x%x", b) }
+    end
   end
 
   def start?
@@ -98,6 +125,10 @@ class Midi
   def pulse?
     @type == :pulse
   end
+  
+  def cc?
+    @type == :cc
+  end
 
   def clock?
     [:pulse,:start,:stop].include?(@type)
@@ -105,6 +136,10 @@ class Midi
 
   def note?
     [:note_on,:note_off].include?(@type)
+  end
+
+  def chan?
+    note? || cc?
   end
 end
 
