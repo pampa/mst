@@ -30,11 +30,9 @@ VALUE m_Alsa_input(VALUE self, VALUE ports);
 VALUE list_card_devices(int);
 VALUE list_device(snd_ctl_t *ctl, int card, int device);
 
-/*
 VALUE c_Output;
 VALUE c_output_open(VALUE class, VALUE port);
 VALUE c_output_send(VALUE self, VALUE data);
-*/
 
 void Init_alsa_ext() 
 { 
@@ -42,12 +40,10 @@ void Init_alsa_ext()
     rb_define_singleton_method(m_Alsa,"hw_ports",m_Alsa_hw_ports,0);
     rb_define_singleton_method(m_Alsa,"input",   m_Alsa_input,1);
 
-    /*
     c_Output = rb_define_class_under(m_Alsa, "Output", rb_cObject);
     rb_define_singleton_method(c_Output,"open",c_output_open,1);
     rb_define_method(c_Output,"send",c_output_send,1);
     rb_define_method(c_Output,"<<",c_output_send,1);
-    */
 }
 
 VALUE m_Alsa_hw_ports(void) 
@@ -259,7 +255,6 @@ VALUE m_Alsa_input(VALUE self, VALUE ports)
     return Qnil;
 }
 
-/*
 VALUE c_output_open(VALUE class, VALUE port)
 {
     int status;
@@ -289,4 +284,4 @@ VALUE c_output_send(VALUE self, VALUE data) {
     } 
 
     return Qnil;
-}*/
+}

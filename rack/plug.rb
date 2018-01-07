@@ -67,6 +67,13 @@ class Plug
     end
   end
 
+  def out
+    if @out == nil
+      @out = Alsa::Output.open(hw_port)
+    end
+    @out
+  end
+
   private
   def xpand(a)
     if a.class != Array
@@ -109,9 +116,7 @@ class Midi
       @number = bytes[1].ord
       @value  = bytes[2].ord
     end
-    if @type.nil?
-      @bytes = bytes.bytes.collect { |b| sprintf("0x%x", b) }
-    end
+    @bytes = bytes.bytes.collect { |b| sprintf("0x%x", b) }
   end
 
   def start?
