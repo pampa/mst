@@ -16,7 +16,10 @@ x0x = X0X.new(circ.out) do |x|
     x.drum2 "---- S--- ---- S--- ---- S--- ---- S---"
     x.drum4 "H-H- H-H- H-H- H-H- H-H- H-H- H-H- H-H-"
   end
-  x.song :a, :a, :b, :b
+
+  a = [:a, :a]
+  b = [:b, :b]
+  x.song a, b
 end
 
 circ.input :type => :clock do |m|

@@ -38,7 +38,7 @@ class X0X
   end
 
   def song(*a)
-    @song = a
+    @song = a.flatten
   end
 
   def drum1(s)
