@@ -4,6 +4,7 @@ class X0X
     @run   = false
     @pos   = 0
     @seq   = {}
+    @song  = []
     yield(self)
   end
 
@@ -13,10 +14,10 @@ class X0X
       @pos   = 0
     end
     @run = false if m.stop?
-    step if @run && m.pulse?
+    pulse if @run && m.pulse?
   end
 
-  def step
+  def pulse 
     if @pos >= @seq[@song[0]].length
       @pos = 0
       @song << @song.shift
@@ -28,6 +29,7 @@ class X0X
 
   def part(part)
     @_part = part
+    @song << part 
     yield(self)
     @_part = nil 
   end
@@ -36,35 +38,37 @@ class X0X
     @song = a.flatten
   end
 
-  def drum1(s)
-    drum(0x3c, s)
+  def drum1(s, **kw)
+    drum(0x3c, s, **kw)
   end
   
-  def drum2(s)
-    drum(0x3e, s)
+  def drum2(s, **kw)
+    drum(0x3e, s, **kw)
   end
   
-  def drum3(s)
-    drum(0x40, s)
+  def drum3(s, **kw)
+    drum(0x40, s, **kw)
   end
   
-  def drum4(s)
-    drum(0x41, s)
+  def drum4(s, **kw)
+    drum(0x41, s, **kw)
   end
 
-  def drum(byte, s)
+  def drum(byte, s, step: 6)
     _s = s.each_byte.reject { |c| [" ", "|"].include?(c.chr) }
+    raise "Sequence length #{_s.length * step} % 96 != 0, #{s}" unless (_s.length * step) % 96 == 0
     merge_seq (_s.map do |i|
       if i.chr == "-"
-        [nil] * 6
+        [nil] * step 
       else
-        [[ 0x99, byte, 0x60, 0x89, byte, 0x00 ].map(&:chr).join, [nil] * 5]
+        [[ 0x99, byte, 0x60, 0x89, byte, 0x00 ].map(&:chr).join, [nil] * (step - 1)]
       end
     end).flatten
   end
 
   def merge_seq(s)
     @seq[@_part] = [nil] * s.length if @seq[@_part].nil?
+    raise "seq.length #{@seq[@_part].length} != #{s.length}" unless @seq[@_part].length == s.length
     for i in 0..(@seq[@_part].length - 1)
       if @seq[@_part][i].nil?
         @seq[@_part][i] = s[i]

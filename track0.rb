@@ -7,19 +7,16 @@ circ = Plug.new("Circuit", "Circuit MIDI 1")
 
 x0x = X0X.new(circ.out) do |x|
   x.part :a do |x|
-    x.drum1 "| K--- K--- K--- K--- | K--- K--- K--- K-K- |"
-    x.drum2 "| ---- S--- ---- S--- | ---- S--- ---- S--- |"
-  end
-  
-  x.part :b do |x|
-    x.drum1 "| K--- K--- K--- K--- | K--- K--- K--- K--- |"
+    x.drum1 "| KKKK | KKKK |", step: 24
     x.drum2 "| ---- S--- ---- S--- | ---- S--- ---- S--- |"
     x.drum4 "| H-H- H-H- H-H- H-H- | H-H- H-H- H-H- H-H- |"
   end
-
-  a = [:a, :a]
-  b = [:b, :b]
-  x.song a, b
+  
+  x.part :b do |x|
+    x.drum1 "| KKKK | KKKK |", step: 24
+    x.drum2 "| ---- S--- ---- S--- | ---- S--- ---- S--- |"
+    x.drum4 "| H-H-H- H-H-H- H-H-H- H-H-H- | H-H-H- H-H-H- H-H-H- H-H-H- |", step: 4
+  end
 end
 
 circ.input :type => :clock do |m|
