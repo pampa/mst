@@ -3,7 +3,6 @@ class X0X
     @out   = out
     @run   = false
     @pos   = 0
-    @count = 0
     @seq   = {}
     yield(self)
   end
@@ -12,13 +11,9 @@ class X0X
     if m.start?
       @run   = true
       @pos   = 0
-      @count = 0
     end
     @run = false if m.stop?
-    if @run && m.pulse?
-      step if @count % (24 / 4) == 0
-      @count += 1
-    end
+    step if @run && m.pulse?
   end
 
   def step
@@ -58,21 +53,23 @@ class X0X
   end
 
   def drum(byte, s)
-    _s = s.each_byte.reject { |c| c.chr == " " }
-    if @seq[@_part].nil?
-      @seq[@_part] = [nil] * _s.length
-    end
-
-    for i in 0..(@seq[@_part].length - 1)
-      if _s[i].chr == "-"
-        next
+    _s = s.each_byte.reject { |c| [" ", "|"].include?(c.chr) }
+    merge_seq (_s.map do |i|
+      if i.chr == "-"
+        [nil] * 6
       else
-        _b = [ 0x99, byte, 0x60, 0x89, byte, 0x00 ].map(&:chr).join
-        if @seq[@_part][i].nil?
-          @seq[@_part][i] = _b
-        else
-          @seq[@_part][i] += _b
-        end
+        [[ 0x99, byte, 0x60, 0x89, byte, 0x00 ].map(&:chr).join, [nil] * 5]
+      end
+    end).flatten
+  end
+
+  def merge_seq(s)
+    @seq[@_part] = [nil] * s.length if @seq[@_part].nil?
+    for i in 0..(@seq[@_part].length - 1)
+      if @seq[@_part][i].nil?
+        @seq[@_part][i] = s[i]
+      elsif !s[i].nil?
+        @seq[@_part][i] += s[i]
       end
     end
   end

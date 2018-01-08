@@ -7,14 +7,14 @@ circ = Plug.new("Circuit", "Circuit MIDI 1")
 
 x0x = X0X.new(circ.out) do |x|
   x.part :a do |x|
-    x.drum1 "K--- K--- K--- K--- K--- K--- K--- K-K-"
-    x.drum2 "---- S--- ---- S--- ---- S--- ---- S---"
+    x.drum1 "| K--- K--- K--- K--- | K--- K--- K--- K-K- |"
+    x.drum2 "| ---- S--- ---- S--- | ---- S--- ---- S--- |"
   end
   
   x.part :b do |x|
-    x.drum1 "K--- K--- K--- K--- K--- K--- K--- K-K-"
-    x.drum2 "---- S--- ---- S--- ---- S--- ---- S---"
-    x.drum4 "H-H- H-H- H-H- H-H- H-H- H-H- H-H- H-H-"
+    x.drum1 "| K--- K--- K--- K--- | K--- K--- K--- K--- |"
+    x.drum2 "| ---- S--- ---- S--- | ---- S--- ---- S--- |"
+    x.drum4 "| H-H- H-H- H-H- H-H- | H-H- H-H- H-H- H-H- |"
   end
 
   a = [:a, :a]
