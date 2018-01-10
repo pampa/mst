@@ -1,3 +1,9 @@
+class Symbol
+  def *(n)
+    [self] * n
+  end
+end
+
 class Sequencer 
   def initialize(out)
     @out   = out

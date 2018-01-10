@@ -21,13 +21,13 @@ class X0X < Sequencer
 
   end
 
-  def drum(byte, s, step: 6)
+  def drum(byte, s, step: 6, velo: 0x30, acc: 0x70)
     _s = s.each_byte.reject { |c| [" ", "|"].include?(c.chr) }
     merge_seq (_s.map do |i|
       if i.chr == "-"
         [nil] * step 
       else
-        [[ 0x99, byte, 0x60, 0x89, byte, 0x00 ].map(&:chr).join, [nil] * (step - 1)]
+        [[ 0x99, byte, i > 90 ? velo: acc, 0x89, byte, 0x00 ].map(&:chr).join, [nil] * (step - 1)]
       end
     end).flatten
   end
