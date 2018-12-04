@@ -1,0 +1,15 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    ffi (1.9.25)
+    rtmidi (0.3)
+      ffi (~> 1.9)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  rtmidi
+
+BUNDLED WITH
+   1.17.1
