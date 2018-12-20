@@ -1,6 +1,6 @@
 # About
 
-Ruby DSL for sequencing external MIDI gear
+A collection of ruby scripts i use to seuqence my synths via midi
 
 # x0x.rb - drum machine pattern sequencer
 

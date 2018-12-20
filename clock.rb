@@ -22,7 +22,7 @@ class Clock
   end
 
   def clock 
-    if @at.keys.include?(@clock) then
+    unless @at[@clock].nil? 
       @at[@clock].call
     end
     @clock += 1
