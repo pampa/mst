@@ -14,12 +14,12 @@ class TimeCode
     @clock += 1
   end
 
-  def reset 
-    @clock = 0
-  end
+#  def reset 
+#    @clock = 0
+#  end
 
-  alias_method :stop,  :reset
-  alias_method :start, :reset
+#  alias_method :stop,  :reset
+#  alias_method :start, :reset
 
   def to_s
     pos  = @clock % @bar_len + 1

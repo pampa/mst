@@ -1,28 +1,30 @@
-require "rtmidi"
+require 'coremidi'
 
 class Clock 
   def initialize(name)
     @run       = false
     @clock_out = []
 
-    input = RtMidi::In.new
-    port  = input.port_names.index(name)
+    port  = CoreMIDI::Source.all.select { |s| s.name == name }[0]
     if port.nil?
-      puts input.port_names.inspect
+      CoreMIDI::Source.all.each do |s|
+        puts s.name
+      end
       raise "no such device #{name}" 
     end
 
-    input.receive_message do | *bytes |
-      begin
-        start if  bytes[0] == 0xFA 
-        stop  if  bytes[0] == 0xFC
-        pulse if (bytes[0] == 0xF8) && @run
-      rescue Exception => e
-        puts e
-        puts e.backtrace
+    port.open do | input |
+      while true
+        data = input.gets
+        sleep 0.00000001 if data.empty?
+        data.each do |m|
+          puts m[:data].inspect
+          start if  m[:data][0] == 0xFA 
+          stop  if  m[:data][0] == 0xFC
+          pulse if (m[:data][0] == 0xF8) && @run
+        end
       end
     end
-    input.open_port(port)
   end
   
   def pulse

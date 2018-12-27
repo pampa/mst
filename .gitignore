@@ -3,3 +3,4 @@ mkmf.log
 *.so
 *.o
 *.swp
+node_modules
