@@ -1,0 +1,24 @@
+{
+  "name": "cacofonix",
+  "version": "1.0.0",
+  "description": "modular seqeuncing toolkit",
+  "main": "clock.js",
+  "dependencies": {
+    "midi": "^0.9.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pampa/cacofonix.git"
+  },
+  "keywords": [
+    "midi",
+    "eurorack",
+    "synthesizers"
+  ],
+  "author": "Alex Zhukov <baron.pampa@gmail.com>",
+  "license": "UNLICENSE",
+  "bugs": {
+    "url": "https://github.com/pampa/cacofonix/issues"
+  },
+  "homepage": "https://github.com/pampa/cacofonix#readme"
+}
