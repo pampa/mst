@@ -1,5 +1,5 @@
 const selectPort = (ports, name) => {
-    var list = listPorts(ports);
+    let list = listPorts(ports);
     if (name in list) {
         ports.openPort(list[name]);
     } else {
@@ -9,8 +9,8 @@ const selectPort = (ports, name) => {
 }
 
 const listPorts = (ports) => {
-    var list = {};
-    for (var i = 0; i < ports.getPortCount(); i++) {
+    let list = {};
+    for (let i = 0; i < ports.getPortCount(); i++) {
         list[ports.getPortName(i)] = i;
     }
     return list;

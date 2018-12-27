@@ -1,10 +1,16 @@
 const midi = require('midi');
 const util = require('./util');
+const _    = require ('lodash');
 
 class Sequence {
     constructor(name) {
         this.queue = [];
         this.output = new midi.output();
+
+        if (this.next === undefined) {
+            throw new TypeError("Must override method next");
+        }
+
         util.selectPort(this.output, name);
     }
 
@@ -12,7 +18,7 @@ class Sequence {
         if(this.queue.length === 0) {
             this.next();
         }
-        var message = this.queue.shift();
+        let message = this.queue.shift();
         if(typeof message !== "undefined") {
             do {
                 this.output.sendMessage(message.splice(0,3));
@@ -20,9 +26,12 @@ class Sequence {
         }
     }
 
-    next() {
-        this.queue.push([0x99,0x3c,90,0x99,0x41,90]);
-        this.queue.push(...Array(23));
+    add() {
+        this.queue = _.zipWith(this.queue, arguments, (a, b) => {
+            if (a == undefined) { return b; }
+            if (b == undefined) { return a; }
+            return [...a, ...b];
+        });
     }
 
     start() {
