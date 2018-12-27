@@ -14,12 +14,14 @@ class Sequence {
         }
         var message = this.queue.shift();
         if(typeof message !== "undefined") {
-            this.output.sendMessage(message);
+            do {
+                this.output.sendMessage(message.splice(0,3));
+            } while (message.length > 0);
         }
     }
 
     next() {
-        this.queue.push([0x99,0x3c,90]);
+        this.queue.push([0x99,0x3c,90,0x99,0x41,90]);
         this.queue.push(...Array(23));
     }
 
