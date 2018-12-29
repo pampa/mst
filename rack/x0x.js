@@ -11,7 +11,7 @@ class x0x {
     pat(name, pattern, func) {
         this.patterns[name] = {
             pattern: pattern.replace(/[|\s]/g,""),
-            func
+            func: func === undefined ? this.patterns[name].func : func
         }
     }
 
