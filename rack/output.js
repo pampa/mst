@@ -1,6 +1,6 @@
 const midi         = require('midi');
 const util         = require('./util');
-const _            = require ('lodash');
+const _            = require('lodash');
 
 class Output {
     constructor(name) {

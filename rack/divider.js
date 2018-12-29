@@ -4,21 +4,22 @@ class Divider extends Events {
     constructor() {
         super();
         this.run   = false;
-        this.count = 0;
+        this.steps = 0;
     }
     start() { 
         this.run = true;
     }
     stop()  {
-        this.run = false; this.count = 0;
+        this.run = false;
+        this.steps = 0;
     }
     clock() {
         if (this.run) {
             this.eventNames().map((e) => {
                 let _e = parseInt(e);
-                if (this.count % e === 0) { this.emit(e) }
+                if (this.steps % e === 0) { this.emit(e) }
             });
-            this.count += 1;
+            this.steps += 1;
         }
     }
 }
