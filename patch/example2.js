@@ -1,5 +1,5 @@
 /*
- * simple kick share hh pattern
+ * simple kick snare hh pattern
  * midi clock from Novation Circuit via x0x 
  * to trigger Circuits drums
  */
