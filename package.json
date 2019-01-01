@@ -2,7 +2,6 @@
   "name": "cacofonix",
   "version": "1.0.0",
   "description": "modular seqeuncing toolkit",
-  "main": "clock.js",
   "dependencies": {
     "lodash": "^4.17.11",
     "midi": "^0.9.5"
@@ -13,8 +12,10 @@
   },
   "keywords": [
     "midi",
+    "modular",
     "eurorack",
-    "synthesizers"
+    "synthesizers",
+    "sequencer"
   ],
   "author": "Alex Zhukov <baron.pampa@gmail.com>",
   "license": "UNLICENSE",
