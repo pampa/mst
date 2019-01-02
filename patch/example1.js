@@ -21,8 +21,8 @@ clock.on("stop", () => {
 });
 
 clock.on("clock", () => {
-    div.clock();
-    circuit.clock();
+    div.step();
+    circuit.step();
 });
 
 let snare = false;

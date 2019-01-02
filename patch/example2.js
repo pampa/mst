@@ -12,8 +12,8 @@ const x0x   = new (require("../rack/x0x"))();
 clock.on("start", () => { div.start(); });
 clock.on("stop",  () => { div.stop();  });
 clock.on("clock", () => { 
-    div.clock();
-    circ.clock();
+    div.step();
+    circ.step();
 });
 
 x0x.pat("kick",  "| k--- k--- k--- k--- |", () => { circ.drum1(); });

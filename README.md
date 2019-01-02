@@ -38,7 +38,7 @@ to it.
 ```javascript
 const output = new Output("device name");
 
-input.on("clock", () => { output.clock(); });
+input.on("clock", () => { output.step(); });
 
 output.play([0x90,60,90],...Array(96 - 1),[0x80,60,0); // play c3 full note
 output.play([0x90,64,90],...Array(48 - 1),[0x80,64,0); // play e3 half note

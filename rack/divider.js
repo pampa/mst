@@ -13,7 +13,7 @@ class Divider extends Events {
         this.run = false;
         this.steps = 0;
     }
-    clock() {
+    step() {
         if (this.run) {
             this.eventNames().map((e) => {
                 let _e = parseInt(e);

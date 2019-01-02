@@ -9,7 +9,7 @@ class Output {
         util.selectPort(this.output, name);
     }
 
-    clock() {
+    step() {
         let message = this.queue.shift();
         if(message !== undefined) {
             do {

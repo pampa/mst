@@ -7,7 +7,7 @@ class Time {
         this.barLen  = this.beatLen * count;
     }
 
-    clock() {
+    step() {
         if(this.run) {
             Object.keys(this.events).map((k) => {
                 if(parseInt(k) === this.steps) {

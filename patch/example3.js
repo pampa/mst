@@ -15,8 +15,8 @@ clock.on("stop",  () => {
     x0x.reset();
 });
 clock.on("clock", () => { 
-    div.clock();
-    circ.clock();
+    div.step();
+    circ.step();
 });
 
 x0x.pat("kick",  "| k----- k----- k----- k----- |", () => { circ.drum1(); });
