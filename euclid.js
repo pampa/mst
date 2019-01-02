@@ -1,10 +1,10 @@
 /*
- * naive recursive euclidean pattern generator
+ * Naive recursive euclidean pattern generator with pattern inversion
  */
 
 const _ = require('lodash');
 
-const euclid = (pulses, steps, trig = "k") => {
+const euclid = (pulses, steps, trig = "k", rest = "-" ) => {
     if (pulses > steps) {
         return _.fill(Array(steps), trig).join('').substring(0,steps);
     };
@@ -39,8 +39,13 @@ const euclid = (pulses, steps, trig = "k") => {
     p = combine(split([], p));
 
     trig = trig.split('');
+    rest = rest.split('');
     return p.map((i) => {
-        if (i === 0) return "-";
+        if (i === 0) { 
+            let _r = rest.shift();
+            rest.push(_r);
+            return _r;
+        }
         if (i === 1) {
             let _t = trig.shift();
             trig.push(_t);
