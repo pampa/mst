@@ -1,3 +1,8 @@
+/*
+ * midi clock divider
+ * standard midi clock is 24ppq - 24 pulses per quarter note
+ */
+
 const Events = require("events");
 
 class Divider extends Events {

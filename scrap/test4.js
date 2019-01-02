@@ -2,11 +2,17 @@
  * Replacing x0x patterns at set points in time
  */
 
-const clock = new (require("../rack/input"))("Circuit");
-const circ  = new (require("../rack/circuit"))();
-const div   = new (require("../rack/divider"))(); 
-const time  = new (require("../rack/time"))(); 
-const x0x   = new (require("../rack/x0x"))();
+const midi    = require("../midi");
+const circuit = require("../circuit");
+
+const div   = new (require("../divider"))(); 
+const time  = new (require("../time"))(); 
+const x0x   = new (require("../x0x"))();
+
+const clock  = new midi.Input("Circuit");
+const output = new midi.Output("Circuit");
+
+const kick = new circuit.Drum1(output);
 
 clock.on("start", () => {
     time.start();
@@ -20,10 +26,10 @@ clock.on("stop",  () => {
 clock.on("clock", () => { 
     time.step();
     div.step();
-    circ.step();
+    output.step();
 });
 
-x0x.pat("kick", "| K--- k--- K--k k--- |", () => { circ.drum1(); });
+x0x.pat("kick", "| K--- k--- K--k k--- |", () => { kick.trig(); });
 
 time.at({bar: 5}, () => {
     time.log();

@@ -1,5 +1,5 @@
 /*
- * Simple x0x style trigger sequencer
+ * x0x style trigger sequencer
  */
 
 class x0x {

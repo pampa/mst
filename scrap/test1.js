@@ -4,12 +4,11 @@
  * divider to trigger Circuits drums
  */
 
-const Input   = require("../rack/input");
-const Output  = require("../rack/output");
-const Divider = require("../rack/divider"); 
+const midi    = require("../midi");
+const Divider = require("../divider"); 
 
-const clock   = new Input("Circuit");
-const circuit = new Output("Circuit");
+const clock   = new midi.Input("Circuit");
+const circuit = new midi.Output("Circuit");
 const div     = new Divider();
 
 clock.on("start", () => {
@@ -27,12 +26,14 @@ clock.on("clock", () => {
 
 let snare = false;
 div.on(24, () => {
-    circuit.play([0x99,0x3c,90]);
+    circuit.play({ note: 0x3c, channel: 10, velocity: 90 });
     // play the snare every other beat
-    if(snare) { circuit.play([0x99,0x3e,90]); }
+    if(snare) { 
+        circuit.play({ note: 0x3e, channel: 10, velocity: 90 });
+    }
     snare = !snare;
 });
 
 div.on(12, () => {
-    circuit.play([0x99,0x40,90]);
+    circuit.play({ note: 0x40, channel: 10, velocity: 90 });
 });

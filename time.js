@@ -1,3 +1,7 @@
+/*
+ * Time Line event scheduler
+ */
+
 class Time {
     constructor(count = 4, note =4) {
         this.events  = {};
