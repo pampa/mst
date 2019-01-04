@@ -4,7 +4,7 @@
 
 const _ = require('lodash');
 
-const euclid = (pulses, steps, trig = "k", rest = "-" ) => {
+const euclid = (pulses, steps, trig = "x", rest = "-" ) => {
     if (pulses > steps) {
         return _.fill(Array(steps), trig).join('').substring(0,steps);
     };
