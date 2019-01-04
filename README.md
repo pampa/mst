@@ -11,6 +11,15 @@ It is based on nodejs javascript interpreter and node-rtmidi bindings.
 The toolkit does not come with an internal clock source. External
 midi clock must be patched in e.g. from a drum machine or DAW.
 
+All musical timings within the toolkit are in **steps**. Midi clock is 
+24ppq / 24 pulses per querter note, so each 4th note is 24 steps.
+8th are 12 steps, 16th are 6 steps, 32th are 3 steps.
+Smallest division is 1/96 of a full note. 
+
+You can increase the resolution of the sequencer by doubling the 
+incomming clock - e.g. set the drum machine to 200bpm instead of 100,
+and adjust the clock divisions for event scheduling accordingly.
+
 ## midi.Input
 
 Midi input port, provides clock and transport control messages.

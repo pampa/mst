@@ -3,11 +3,11 @@
  */
 
 class Time {
-    constructor(count = 4, note =4) {
+    constructor(count = 4, note = 4, ppq = 24) {
         this.events  = {};
         this.run     = false;
         this.steps   = 0;
-        this.beatLen = 96 / note;
+        this.beatLen = (ppq * 4) / note;
         this.barLen  = this.beatLen * count;
     }
 
